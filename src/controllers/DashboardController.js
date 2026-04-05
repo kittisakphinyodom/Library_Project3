@@ -1,5 +1,5 @@
 // Dashboard controller
-const { db } = require("../database");
+//const { db } = require("../database");
 const { getOne } = require("../models/query");
 
 const DashboardController = {
