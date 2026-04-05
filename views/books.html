@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Books - Library Management System</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">📚 Library System</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/books">Books</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/members">Members</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/borrowing">Borrowing</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/reports">Reports</a>
+            </li>
+            <li class="nav-item">
+              <span
+                class="navbar-text"
+                id="userName"
+                style="color: white; margin-right: 20px"
+              ></span>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-light btn-sm" id="logoutBtn">
+                Logout
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <div class="row mb-4">
+        <div class="col">
+          <h2>📖 Books Management</h2>
+        </div>
+        <div class="col text-end">
+          <button class="btn btn-add" id="addBookBtn">+ Add Book</button>
+        </div>
+      </div>
+
+      <!-- Search Section -->
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="searchInput"
+              placeholder="Search by title, author, or ISBN..."
+              aria-label="Search books"
+            />
+            <button class="btn btn-primary" id="searchBtn" type="button">
+              🔍 Search
+            </button>
+            <button class="btn btn-secondary" id="clearSearchBtn" type="button">
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="table table-striped mb-0" id="booksTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>ISBN</th>
+              <th>Total Copies</th>
+              <th>Available</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="booksTableBody">
+            <tr>
+              <td colspan="7" class="text-center text-muted">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Add Book Modal -->
+    <div
+      class="modal fade"
+      id="addBookModal"
+      tabindex="-1"
+      aria-labelledby="addBookModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addBookModalLabel">Add New Book</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="addBookForm">
+              <div class="mb-3">
+                <label for="bookTitle" class="form-label">Title *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="bookTitle"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="bookAuthor" class="form-label">Author *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="bookAuthor"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="bookISBN" class="form-label">ISBN</label>
+                <input type="text" class="form-control" id="bookISBN" />
+              </div>
+              <div class="mb-3">
+                <label for="bookPublisher" class="form-label">Publisher</label>
+                <input type="text" class="form-control" id="bookPublisher" />
+              </div>
+              <div class="mb-3">
+                <label for="bookYear" class="form-label"
+                  >Publication Year</label
+                >
+                <input type="number" class="form-control" id="bookYear" />
+              </div>
+              <div class="mb-3">
+                <label for="bookCategory" class="form-label">Category</label>
+                <input type="text" class="form-control" id="bookCategory" />
+              </div>
+              <div class="mb-3">
+                <label for="bookCopies" class="form-label"
+                  >Total Copies *</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="bookCopies"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="bookShelf" class="form-label">Shelf Location</label>
+                <input type="text" class="form-control" id="bookShelf" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="saveBookBtn"
+              onclick="saveBook()"
+            >
+              Save Book
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Book Modal -->
+    <div
+      class="modal fade"
+      id="editBookModal"
+      tabindex="-1"
+      aria-labelledby="editBookModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editBookModalLabel">Edit Book</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="editBookForm">
+              <input type="hidden" id="editBookId" />
+              <div class="mb-3">
+                <label for="editBookTitle" class="form-label">Title *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editBookTitle"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editBookAuthor" class="form-label">Author *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editBookAuthor"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editBookISBN" class="form-label">ISBN</label>
+                <input type="text" class="form-control" id="editBookISBN" />
+              </div>
+              <div class="mb-3">
+                <label for="editBookPublisher" class="form-label"
+                  >Publisher</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editBookPublisher"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editBookYear" class="form-label"
+                  >Publication Year</label
+                >
+                <input type="number" class="form-control" id="editBookYear" />
+              </div>
+              <div class="mb-3">
+                <label for="editBookCategory" class="form-label"
+                  >Category</label
+                >
+                <input type="text" class="form-control" id="editBookCategory" />
+              </div>
+              <div class="mb-3">
+                <label for="editBookCopies" class="form-label"
+                  >Total Copies *</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="editBookCopies"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="editBookShelf" class="form-label"
+                  >Shelf Location</label
+                >
+                <input type="text" class="form-control" id="editBookShelf" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="saveEditBookBtn"
+              onclick="saveEditBook()"
+            >
+              Update Book
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Get current user
+      async function loadCurrentUser() {
+        try {
+          const response = await fetch("/api/auth/me");
+          if (response.ok) {
+            const user = await response.json();
+            document.getElementById("userName").textContent = user.full_name;
+          } else {
+            window.location.href = "/login";
+          }
+        } catch (error) {
+          window.location.href = "/login";
+        }
+      }
+
+      // Load books
+      async function loadBooks() {
+        try {
+          const response = await fetch("/api/books");
+          if (response.ok) {
+            const books = await response.json();
+            const tbody = document.getElementById("booksTableBody");
+            tbody.innerHTML = "";
+
+            if (books.length === 0) {
+              tbody.innerHTML =
+                '<tr><td colspan="7" class="text-center text-muted">No books found</td></tr>';
+              return;
+            }
+
+            books.forEach((book) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${book.id}</td>
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.isbn || ""}</td>
+                <td>${book.total_copies}</td>
+                <td>${book.available_copies}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary" onclick="editBook(${book.id})">Edit</button>
+                  <button class="btn btn-sm btn-danger" onclick="deleteBook(${book.id})">Delete</button>
+                </td>
+              `;
+              tbody.appendChild(row);
+            });
+          }
+        } catch (error) {
+          console.error("Error loading books:", error);
+          // Show error message in table
+          const tbody = document.getElementById("booksTableBody");
+          tbody.innerHTML =
+            '<tr><td colspan="7" class="text-center text-danger">Error loading books</td></tr>';
+        }
+      }
+
+      function editBook(id) {
+        // Load book data and show edit modal
+        fetch(`/api/books/${id}`)
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("Book not found");
+            }
+          })
+          .then((book) => {
+            // Populate edit form
+            document.getElementById("editBookId").value = book.id;
+            document.getElementById("editBookTitle").value = book.title;
+            document.getElementById("editBookAuthor").value = book.author;
+            document.getElementById("editBookISBN").value = book.isbn || "";
+            document.getElementById("editBookPublisher").value =
+              book.publisher || "";
+            document.getElementById("editBookYear").value =
+              book.publication_year || "";
+            document.getElementById("editBookCategory").value =
+              book.category || "";
+            document.getElementById("editBookCopies").value = book.total_copies;
+            document.getElementById("editBookShelf").value =
+              book.shelf_location || "";
+
+            // Show modal
+            const modal = new bootstrap.Modal(
+              document.getElementById("editBookModal"),
+            );
+            modal.show();
+          })
+          .catch((error) => {
+            console.error("Error loading book:", error);
+            alert("Error loading book: " + error.message);
+          });
+      }
+
+      function deleteBook(id) {
+        if (confirm("Are you sure you want to delete this book?")) {
+          fetch(`/api/books/${id}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => {
+              if (response.ok) {
+                alert("Book deleted successfully!");
+                loadBooks();
+              } else {
+                return response.json().then((error) => {
+                  throw new Error(error.error || "Failed to delete book");
+                });
+              }
+            })
+            .catch((error) => {
+              console.error("Error deleting book:", error);
+              alert("Error: " + error.message);
+            });
+        }
+      }
+
+      // Save edited book
+      async function saveEditBook() {
+        const bookId = document.getElementById("editBookId").value;
+        const title = document.getElementById("editBookTitle").value.trim();
+        const author = document.getElementById("editBookAuthor").value.trim();
+        const isbn = document.getElementById("editBookISBN").value.trim();
+        const publisher = document
+          .getElementById("editBookPublisher")
+          .value.trim();
+        const publicationYear = document
+          .getElementById("editBookYear")
+          .value.trim();
+        const category = document
+          .getElementById("editBookCategory")
+          .value.trim();
+        const totalCopies = document
+          .getElementById("editBookCopies")
+          .value.trim();
+        const shelfLocation = document
+          .getElementById("editBookShelf")
+          .value.trim();
+
+        if (!title || !author || !totalCopies) {
+          alert("Title, Author, and Total Copies are required!");
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/books/${bookId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              title,
+              author,
+              isbn: isbn || null,
+              publisher: publisher || null,
+              publicationYear: publicationYear || null,
+              category: category || null,
+              totalCopies: parseInt(totalCopies),
+              shelfLocation: shelfLocation || null,
+            }),
+          });
+
+          if (response.ok) {
+            alert("Book updated successfully!");
+            document.getElementById("editBookForm").reset();
+            const modal = document.getElementById("editBookModal");
+            const bootstrapModal = window.bootstrap.Modal.getInstance(modal);
+            bootstrapModal.hide();
+            loadBooks();
+          } else {
+            const error = await response.json();
+            alert("Error: " + (error.error || "Failed to update book"));
+          }
+        } catch (error) {
+          console.error("Error updating book:", error);
+          alert("Error updating book: " + error.message);
+        }
+      }
+
+      // Save book
+      async function saveBook() {
+        const title = document.getElementById("bookTitle").value.trim();
+        const author = document.getElementById("bookAuthor").value.trim();
+        const isbn = document.getElementById("bookISBN").value.trim();
+        const publisher = document.getElementById("bookPublisher").value.trim();
+        const publicationYear = document
+          .getElementById("bookYear")
+          .value.trim();
+        const category = document.getElementById("bookCategory").value.trim();
+        const totalCopies = document.getElementById("bookCopies").value.trim();
+        const shelfLocation = document.getElementById("bookShelf").value.trim();
+
+        if (!title || !author || !totalCopies) {
+          alert("Title, Author, and Total Copies are required!");
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/books", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              title,
+              author,
+              isbn: isbn || null,
+              publisher: publisher || null,
+              publicationYear: publicationYear || null,
+              category: category || null,
+              totalCopies: parseInt(totalCopies),
+              shelfLocation: shelfLocation || null,
+            }),
+          });
+
+          if (response.ok) {
+            alert("Book added successfully!");
+            document.getElementById("addBookForm").reset();
+            const modal = document.getElementById("addBookModal");
+            const bootstrapModal = window.bootstrap.Modal.getInstance(modal);
+            bootstrapModal.hide();
+            loadBooks();
+          } else {
+            const error = await response.json();
+            alert("Error: " + (error.error || "Failed to add book"));
+          }
+        } catch (error) {
+          console.error("Error adding book:", error);
+          alert("Error adding book: " + error.message);
+        }
+      }
+
+      // Search functionality
+      async function searchBooks() {
+        const searchQuery = document.getElementById("searchInput").value.trim();
+
+        if (!searchQuery) {
+          alert("Please enter a search query");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `/api/books/search?q=${encodeURIComponent(searchQuery)}`,
+          );
+          if (response.ok) {
+            const books = await response.json();
+            const tbody = document.getElementById("booksTableBody");
+            tbody.innerHTML = "";
+
+            if (books.length === 0) {
+              tbody.innerHTML =
+                '<tr><td colspan="7" class="text-center text-muted">No books found matching your search</td></tr>';
+              return;
+            }
+
+            books.forEach((book) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${book.id}</td>
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.isbn || ""}</td>
+                <td>${book.total_copies}</td>
+                <td>${book.available_copies}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary" onclick="editBook(${book.id})">Edit</button>
+                  <button class="btn btn-sm btn-danger" onclick="deleteBook(${book.id})">Delete</button>
+                </td>
+              `;
+              tbody.appendChild(row);
+            });
+          } else {
+            const error = await response.json();
+            alert("Error: " + (error.error || "Search failed"));
+          }
+        } catch (error) {
+          console.error("Error searching books:", error);
+          alert("Error searching books: " + error.message);
+        }
+      }
+
+      // Clear search and reload all books
+      function clearSearch() {
+        document.getElementById("searchInput").value = "";
+        loadBooks();
+      }
+
+      // Search button click handler
+      document
+        .getElementById("searchBtn")
+        .addEventListener("click", searchBooks);
+
+      // Clear search button click handler
+      document
+        .getElementById("clearSearchBtn")
+        .addEventListener("click", clearSearch);
+
+      // Allow Enter key to search
+      document
+        .getElementById("searchInput")
+        .addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            searchBooks();
+          }
+        });
+
+      // Add book button
+      document.getElementById("addBookBtn").addEventListener("click", () => {
+        document.getElementById("addBookForm").reset();
+        const modal = new bootstrap.Modal(
+          document.getElementById("addBookModal"),
+        );
+        modal.show();
+      });
+
+      // Logout
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", async () => {
+          try {
+            await fetch("/api/auth/logout", { method: "POST" });
+            window.location.href = "/login";
+          } catch (error) {
+            console.error("Logout error:", error);
+          }
+        });
+
+      // Load user and books on page load
+      window.addEventListener("load", () => {
+        loadCurrentUser();
+        loadBooks();
+      });
+    </script>
+  </body>
+</html>
