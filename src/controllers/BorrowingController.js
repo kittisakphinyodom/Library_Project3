@@ -189,8 +189,7 @@ const BorrowingController = {
         return res.status(400).json({ error: "Cannot extend a returned book" });
       }
 
-      // Update due date (simple update without status change)
-      const { db } = require("../database");
+      // Update due date (simple update without status change)      
       const { run } = require("../models/query");
       await run("UPDATE borrowing SET due_date = ? WHERE borrow_id = ?", [
         newDueDate,
