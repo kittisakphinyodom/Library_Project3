@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
-const { initializeDatabase, db } = require("./database");
+const { initializeDatabase, } = require("./database");
 
 // Import routes
 const authRoutes = require("./routes/auth");
@@ -111,6 +111,7 @@ app.use((req, res) => {
 });
 
 // Error handler
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: "Internal server error" });
@@ -124,7 +125,7 @@ async function start() {
 
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
-      console.log("Login: admin / admin123 or librarian / lib123");
+      
     });
   } catch (error) {
     console.error("Failed to start server:", error);
